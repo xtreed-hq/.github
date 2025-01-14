@@ -8,8 +8,8 @@ For now, we're glad of having you here curious about us. 😀
 
 We're gonna leave here some useful links to follow up. They are all related to our development process and documents pretty much all of our work.
 
-[👀 XTreed Main Roadmap](https://github.com/orgs/xtreed-hq/projects/1)
+### [👀 XTreed Main Roadmap](https://github.com/orgs/xtreed-hq/projects/1)
 
-[⛓️ Postman API Documentation](postman.xtreed.com)
+### [⛓️ Postman API Documentation](https://postman.xtreed.com)
 
-[💬 Discussions organization-wide](https://github.com/orgs/xtreed-hq/discussions)
+### [💬 Discussions organization-wide](https://github.com/orgs/xtreed-hq/discussions)
