@@ -1,0 +1,51 @@
+name: Configure Elastic Beanstalk
+description: Install and configure AWS Elastick Beanstalk integration
+author: André Paul Grandsire
+
+inputs:
+  aws-identifier:
+    required: true
+    description: AWS identifier to authorize
+  eb-environment:
+    required: true
+    description: AWS environment to connect and deploy
+  eb-application:
+    required: true
+    description: Application name to use
+  eb-platform:
+    required: true
+    description: Beanstalk platform to init
+  eb-region:
+    required: true
+    description: AWS region to deploy to
+
+runs:
+  using: composite
+  steps:
+    - name: Configure environment pre-Beanstalk
+      uses: actions/checkout@v4
+      with:
+        repository: "aws/aws-elastic-beanstalk-cli-setup"
+        path: "aws-elastic-beanstalk-cli-setup"
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        unset-current-credentials: true
+        role-skip-session-tagging: true
+        aws-region: ${{ inputs.eb-region }}
+        role-to-assume: ${{ inputs.aws-identifier }}
+
+    - name: Install Elastic Beanstalk CLI
+      shell: bash
+      run: |
+        pipx install --include-deps virtualenv
+        pip install packaging
+        echo "~/.ebcli-virtual-env/executables" >> $GITHUB_PATH
+        python $GITHUB_WORKSPACE/aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
+
+    - name: Configure EB CLI
+      shell: bash
+      run: |
+        eb init "${{ inputs.eb-application }}" --region ${{ inputs.eb-region }} --platform "${{ inputs.eb-platform }}"
+        eb use ${{ inputs.eb-environment }}
