@@ -1,5 +1,5 @@
 name: Handle Sentry Releases
-author: andre
+author: André Paul Grandsire
 description: Creates and finalize a specific application version at Sentry
 
 inputs:
