@@ -35,10 +35,11 @@ Permite reutilização por outros workflows ou repositórios.
 
 ## Inputs
 
-| Nome            | Obrigatório | Descrição                                 |
-|-----------------|-------------|-------------------------------------------|
-| `commit_branch` | sim         | Branch onde o commit de versão será feito |
-| `bump_type`     | não         | Tipo de bump (`patch`, `minor`)           |
+| Nome            | Obrigatório | Descrição                                      |
+|-----------------|-------------|------------------------------------------------|
+| `commit_branch` | sim         | Branch onde o commit de versão será feito      |
+| `bump_type`     | não         | Tipo de bump (`patch`, `minor`)                |
+| `publish_tag`   | não         | Define se publica tag ou não (default **true** |
 
 ## Requisitos
 
