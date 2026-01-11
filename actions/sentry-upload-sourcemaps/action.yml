@@ -1,0 +1,42 @@
+name: sentry-upload-sourcemaps
+author: André Paul Grandsire
+description: Upload application sourcemaps to Sentry
+
+inputs:
+  sentry_project:
+    description: "Sentry project to upload sourcemaps"
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Get package info
+      id: package_info
+      shell: bash
+      run: |
+        echo "name=$(node require('./package.json').name)" >> $GITHUB_OUTPUT
+        echo "version=$(node require('./package.json').version)" >> $GITHUB_OUTPUT
+
+    - name: Inject sourcemap into code
+      shell: bash
+      run: |
+        npx sentry-cli sourcemaps inject \
+          --org xtreed \
+          --project ${{ inputs.sentry_project }} \
+          --release "${{ inputs.sentry_project }}@${{ steps.package_info.outputs.version }}" \
+          ./dist
+
+    - name: Upload sourcemaps to Sentry
+      shell: bash
+      env:
+        SENTRY_ORG: xtreed
+        SENTRY_PROJECT: ${{ inputs.sentry_project }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        echo "Using version ${{ steps.package_info.outputs.version }} to upload sourcemaps"
+        npx sentry-cli sourcemaps upload \
+          --org xtreed \
+          --project ${{ inputs.sentry_project }} \
+          --release "${{ inputs.sentry_project }}@${{ steps.package_info.outputs.version }}" \
+          ./dist
