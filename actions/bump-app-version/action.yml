@@ -1,31 +1,31 @@
 name: bump-app-version
-author: andre
-description: bump-app-version
+author: André Paul Grandsir
+description: Bumps a Node application version on a patch/minor scale
 
 inputs:
   publish_tag:
-    description: "Define whether we'll publish a tag"
+    description: "Define if we'll publish a tag"
     required: false
     default: 'true'
 
   commit_branch:
-    description: "Branch para criar nova versão"
+    description: "Branch used to checkout before bump version (ie: development)"
     required: true
 
   bump_type:
-    description: "Tipo de bump de versão"
+    description: "Package bump type (path/minor)"
     required: false
     default: 'patch'
 
 outputs:
   package_name:
-    description: ""
+    description: "The package name parsed from package.json"
     value: ${{ steps.before_bump.outputs.package }}
   production_version:
-    description: ""
+    description: "Application version before bump, used on tag publication"
     value: ${{ steps.before_bump.outputs.version }}
   next_version:
-    description: ""
+    description: "Next version bump with this action"
     value: ${{ steps.after_bump.outputs.version }}
 
 runs:
@@ -65,7 +65,7 @@ runs:
       shell: bash
       run: |
         git add package.json
-        git commit -m "Bump version to v${{ steps.after_bump.outputs.version }}"
+        git commit -m "Bump app version to v${{ steps.after_bump.outputs.version }}"
 
     - name: Push commit and tag
       shell: bash
