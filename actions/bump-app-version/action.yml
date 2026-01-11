@@ -1,0 +1,77 @@
+name: bump-app-version
+author: André Paul Grandsir
+description: Bumps a Node application version on a patch/minor scale
+
+inputs:
+  publish_tag:
+    description: "Define if we'll publish a tag"
+    required: false
+    default: 'true'
+
+  commit_branch:
+    description: "Branch used to checkout before bump version (ie: development)"
+    required: true
+
+  bump_type:
+    description: "Package bump type (path/minor)"
+    required: false
+    default: 'patch'
+
+outputs:
+  package_name:
+    description: "The package name parsed from package.json"
+    value: ${{ steps.before_bump.outputs.package }}
+  production_version:
+    description: "Application version before bump, used on tag publication"
+    value: ${{ steps.before_bump.outputs.version }}
+  next_version:
+    description: "Next version bump with this action"
+    value: ${{ steps.after_bump.outputs.version }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Read current app version
+      id: before_bump
+      shell: bash
+      run: |
+        VERSION=$(node -p "require('./package.json').version")
+        PACKAGE=$(node -p "require('./package.json').name")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "package=$PACKAGE" >> $GITHUB_OUTPUT
+
+    - name: Tag current release on Git
+      if: inputs.publish_tag == 'true'
+      shell: bash
+      run: git tag v${{ steps.before_bump.outputs.version }} main
+
+    - name: Setup git to bump release
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout ${{ inputs.commit_branch }} 
+
+    - name: Prepare next app release
+      id: after_bump
+      shell: bash
+      run: |
+        npm version ${{ inputs.bump_type }} --no-git-tag-version
+        NEW_VERSION=$(node -p "require('./package.json').version")
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Commit version bump
+      shell: bash
+      run: |
+        git add package.json
+        git commit -m "Bump app version to v${{ steps.after_bump.outputs.version }}"
+
+    - name: Push commit and tag
+      shell: bash
+      run: git push origin HEAD
+
+    - name: Push commit and tag
+      if: inputs.publish_tag == 'true'
+      shell: bash
+      run: git push origin v${{ steps.after_bump.outputs.version }}
