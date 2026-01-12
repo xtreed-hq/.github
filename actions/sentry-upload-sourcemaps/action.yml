@@ -7,6 +7,10 @@ inputs:
     description: "Sentry project to upload sourcemaps"
     required: true
 
+  sentry_auth_token:
+    description: "Authentication token to use with Sentry"
+    required: true
+
 runs:
   using: composite
 
@@ -32,7 +36,7 @@ runs:
       env:
         SENTRY_ORG: xtreed
         SENTRY_PROJECT: ${{ inputs.sentry_project }}
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_AUTH_TOKEN: ${{ inputs.sentry_auth_token }}
       run: |
         echo "Using version ${{ steps.package_info.outputs.version }} to upload sourcemaps"
         npx sentry-cli sourcemaps upload \
