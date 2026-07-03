@@ -41,10 +41,15 @@ runs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "package=$PACKAGE" >> $GITHUB_OUTPUT
 
-    - name: Tag current release on Git
+    - name: Fetch remote main for release tag
       if: inputs.publish_tag == 'true'
       shell: bash
-      run: git tag v${{ steps.before_bump.outputs.version }} main
+      run: git fetch origin main
+
+    - name: Tag current release on remote main
+      if: inputs.publish_tag == 'true'
+      shell: bash
+      run: git tag v${{ steps.before_bump.outputs.version }} origin/main
 
     - name: Setup git to bump release
       shell: bash
