@@ -19,9 +19,11 @@ Ele foi desenhado para ser chamado por outros workflows via `workflow_call` ou e
 O fluxo geral é:
 
 1. Lê a versão atual da aplicação
-2. Cria uma tag Git com essa versão
-3. Incrementa a versão (patch/minor)
-4. Publica a nova versão no repositório
+2. Cria uma tag Git com essa versão apontando para `main`
+3. Faz checkout da branch recebida por argumento
+4. Incrementa a versão (patch/minor)
+5. Publica o commit na branch de bump
+6. Publica a tag da versão atual no repositório
 
 ## Triggers suportados
 
@@ -37,7 +39,7 @@ Permite reutilização por outros workflows ou repositórios.
 
 | Nome            | Obrigatório | Descrição                                      |
 |-----------------|-------------|------------------------------------------------|
-| `commit_branch` | sim         | Branch onde o commit de versão será feito      |
+| `commit_branch` | sim         | Branch base que receberá o commit de versão     |
 | `bump_type`     | não         | Tipo de bump (`patch`, `minor`)                |
 | `publish_tag`   | não         | Define se publica tag ou não (default **true** |
 
@@ -49,6 +51,6 @@ Permite reutilização por outros workflows ou repositórios.
 
 ## Observações
 
-- A tag criada sempre representa a versão **já deployada**
-- A nova versão gerada representa o **próximo release**
+- A tag criada sempre representa a versão **já deployada** e aponta para `main`
+- A nova versão gerada representa o **próximo release** e é commitada na branch passada por argumento
 - O workflow evita loops de execução quando bem configurado

@@ -67,11 +67,11 @@ runs:
         git add package.json
         git commit -m "Bump app version to v${{ steps.after_bump.outputs.version }}"
 
-    - name: Push commit and tag
+    - name: Push bump commit
       shell: bash
-      run: git push origin HEAD
+      run: git push origin HEAD:${{ inputs.commit_branch }}
 
-    - name: Push commit and tag
+    - name: Push current release tag
       if: inputs.publish_tag == 'true'
       shell: bash
-      run: git push origin v${{ steps.after_bump.outputs.version }}
+      run: git push origin v${{ steps.before_bump.outputs.version }}
