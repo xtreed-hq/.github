@@ -27,7 +27,7 @@ runs:
     - name: Inject sourcemap into code
       shell: bash
       run: |
-        npx sentry-cli sourcemaps inject \
+        npx --yes @sentry/cli@2 sourcemaps inject \
           --org xtreed \
           --project ${{ inputs.sentry_project }} \
           --release "${{ inputs.sentry_project }}@${{ steps.package_info.outputs.version }}" \
@@ -41,7 +41,7 @@ runs:
         SENTRY_AUTH_TOKEN: ${{ inputs.sentry_auth_token }}
       run: |
         echo "Using version ${{ steps.package_info.outputs.version }} to upload sourcemaps"
-        npx sentry-cli sourcemaps upload \
+        npx --yes @sentry/cli@2 sourcemaps upload \
           --org xtreed \
           --project ${{ inputs.sentry_project }} \
           --release "${{ inputs.sentry_project }}@${{ steps.package_info.outputs.version }}" \

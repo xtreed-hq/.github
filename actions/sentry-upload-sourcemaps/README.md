@@ -72,6 +72,7 @@ sentry:
 
 ## Observações
 
-A action usa `npx sentry-cli`, então não precisa instalar nada globalmente, além da declaração no `package.json`.
+A action busca o `@sentry/cli` sob demanda via `npx`, então o repositório que a
+usa não precisa declará-lo no `package.json`.
 
 Se o `./dist` não existir, o upload falha. 

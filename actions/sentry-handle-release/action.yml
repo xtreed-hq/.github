@@ -4,7 +4,7 @@ description: Creates and finalize a specific application version at Sentry
 
 inputs:
   action:
-    description: "Action to perform at Sentry [create/finalize]"
+    description: "Action to perform at Sentry [create/finalize/archive]"
     required: true
 
   version:
@@ -30,9 +30,9 @@ runs:
       shell: bash
       env:
         SENTRY_AUTH_TOKEN: ${{ inputs.sentry_auth_token }}
-      run: |      
-        echo "Creating release ${{ inputs.version }}"
-        npx sentry-cli releases ${{ inputs.action }} \
+      run: |
+        echo "Running '${{ inputs.action }}' for release ${{ inputs.version }}"
+        npx --yes @sentry/cli@2 releases ${{ inputs.action }} \
         --org ${{ inputs.sentry_org }} \
         --project ${{ inputs.sentry_project }} \
         "${{ inputs.version }}"
